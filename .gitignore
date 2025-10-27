@@ -1,0 +1,18 @@
+# Python-generated files
+__pycache__/
+*.pyc
+**/*.pyc
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv/
+
+logs/
+runtime_sandbox_storage/
+sessions_mount_dir/
+access.log
+app.log

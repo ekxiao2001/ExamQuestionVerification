@@ -1,0 +1,25 @@
+services:
+  runtime_sandbox_base:
+    image: agentscope/runtime-sandbox-base:latest
+    ports:
+      - 8002:8002
+    networks:
+      - default
+
+  exam_question_verification:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    networks:
+      - default
+    env_file:
+      - path: .env
+        required: true
+    depends_on:
+      - runtime_sandbox_base
+  
+networks:
+  default:
+    driver: bridge
