@@ -2,10 +2,11 @@
 这里实现了考试问题核查功能
 
 ### 代码结构
-- `exam_question_verification.py`：考试问题核查的实现代码
-- `conf.yaml`：配置文件
-- `prompts.py`：考试问题核查的提示词
+- `src/exam_question_verification.py`：考试问题核查的实现代码
+- `src/prompts.py`：考试问题核查的提示词
+- `.env`：配置文件
 - `api_server.py`：考试问题核查的API服务端代码
+- `agent_runtime.py`：考试问题核查agent的runtime代码
 
 ### 考试问题核查流程
 1. 输入待核查的考题信息，考题信息包括：

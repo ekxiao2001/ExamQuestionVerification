@@ -30,9 +30,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Copy application code
 COPY src/ ./src/
-COPY .env ./
-COPY api_server.py ./
-COPY agent_runtime.py ./
+COPY .env api_server.py agent_runtime.py ./
 
 # Expose port
 EXPOSE 8000

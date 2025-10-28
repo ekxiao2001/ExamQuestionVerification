@@ -128,9 +128,10 @@ class StandardResponse(BaseModel):
 
 
 # ---------- 加载 .env 配置到环境变量 ----------
-from dotenv import load_dotenv
 ENV_PATH = os.path.join(os.path.dirname(__file__), ".env")
-load_dotenv(ENV_PATH)
+if os.path.exists(ENV_PATH):
+    from dotenv import load_dotenv
+    load_dotenv(ENV_PATH)
 
 # def load_env_from_file(dotenv_path: str) -> None:
 #     try:

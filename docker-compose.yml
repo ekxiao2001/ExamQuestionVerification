@@ -1,8 +1,10 @@
+# version: "1.1"
+
 services:
   runtime_sandbox_base:
     image: agentscope/runtime-sandbox-base:latest
     ports:
-      - 8002:8002
+      - 8760:8760
     networks:
       - default
 
@@ -11,7 +13,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8001:8001"
+      - "8762:8762"
     networks:
       - default
     env_file:
