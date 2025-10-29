@@ -1,27 +1,50 @@
-# version: "1.1"
-
 services:
   runtime_sandbox_base:
     image: agentscope/runtime-sandbox-base:latest
     ports:
-      - 8760:8760
+      - 8011:8011
     networks:
       - default
 
-  exam_question_verification:
+  runtime_sandbox_filesystem:
+    image: agentscope/runtime-sandbox-filesystem:latest
+    ports:
+      - 8012:8012
+    networks:
+      - default
+
+  runtime_sandbox_browser:
+    image: agentscope/runtime-sandbox-browser:latest
+    ports:
+      - 8013:8013
+    networks:
+      - default
+
+  agents_server:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8761:8761" # 宿主机端口:容器端口
-      - "8762:8762"
+    ports: # 宿主机端口:容器端口
+      - "8021:8021" # eqv agent_runtime prot
+      - "8022:8022" # eqv fastapi_server prot
     networks:
       - default
     env_file:
       - path: .env
         required: true
+    environment:
+      - AGENT_RUNTIME_HOST=0.0.0.0
+      - RUNTIME_SANDBOX_TYPE=remote # local, remote
+      - RUNTIME_SANDBOX_BASE_HOST=runtime_sandbox_base # only need for remote sandbox
+      - RUNTIME_SANDBOX_BASE_PORT=8011 # only need for remote sandbox
+      - RUNTIME_SANDBOX_FILESYSTEM_HOST=runtime_sandbox_filesystem
+      - RUNTIME_SANDBOX_FILESYSTEM_PORT=8012
+      - RUNNING_SANDBOX_BROSER_HOST=runtime_sandbox_browser 
+      - RUNNING_SANDBOX_BROSER_PORT=8013 
     depends_on:
       - runtime_sandbox_base
+      - runtime_sandbox_filesystem
+      - runtime_sandbox_browser
   
 networks:
   default:

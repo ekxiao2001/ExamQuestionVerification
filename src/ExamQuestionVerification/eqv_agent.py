@@ -217,19 +217,20 @@ class ExamQuestionVerificationAgent:
         await self.memory_service.start()
 
         # 初始化沙箱
-        sandbox_type = CONF.get("AGENT_RUNTIME_SANDBOX_TYPE") or os.getenv("AGENT_RUNTIME_SANDBOX_TYPE") or "local"
-        if sandbox_type == "local":
-            self.sandbox_service = SandboxService()
-        elif sandbox_type == "remote":
-            sandbox_host = CONF.get("AGENT_RUNTIME_SANDBOX_HOST") or os.getenv("AGENT_RUNTIME_SANDBOX_HOST", "localhost")
-            sandbox_port = CONF.get("AGENT_RUNTIME_SANDBOX_PORT") or os.getenv("AGENT_RUNTIME_SANDBOX_PORT", "8002")
-            sandbox_url = f"http://{sandbox_host}:{sandbox_port}"
-            self.sandbox_service = SandboxService(
-                base_url=sandbox_url,
-            )
-        else:
-            raise ValueError(f"不支持的沙箱类型: {sandbox_type}, 请选择 'local' 或 'remote'")
-        await self.sandbox_service.start()
+        # TODO: 连接远程沙箱应该连接到什么类型的沙箱，base、browser or filesystem？
+        # sandbox_type = os.getenv("AGENT_RUNTIME_SANDBOX_TYPE") or "local"
+        # if sandbox_type == "local":
+        #     self.sandbox_service = SandboxService()
+        # elif sandbox_type == "remote":
+        #     sandbox_host = CONF.get("AGENT_RUNTIME_SANDBOX_HOST") or os.getenv("AGENT_RUNTIME_SANDBOX_HOST", "localhost")
+        #     sandbox_port = CONF.get("AGENT_RUNTIME_SANDBOX_PORT") or os.getenv("AGENT_RUNTIME_SANDBOX_PORT", "8002")
+        #     sandbox_url = f"http://{sandbox_host}:{sandbox_port}"
+        #     self.sandbox_service = SandboxService(
+        #         base_url=sandbox_url,
+        #     )
+        # else:
+        #     raise ValueError(f"不支持的沙箱类型: {sandbox_type}, 请选择 'local' 或 'remote'")
+        # await self.sandbox_service.start()
     
         # 创建上下文管理器
         self.context_manager = ContextManager(
@@ -237,9 +238,9 @@ class ExamQuestionVerificationAgent:
             session_history_service=session_history_service
         )
         # 创建环境管理器
-        self.environment_manager = EnvironmentManager(
-            sandbox_service=self.sandbox_service,
-        )
+        # self.environment_manager = EnvironmentManager(
+        #     sandbox_service=self.sandbox_service,
+        # )
 
         # 若需要使用沙箱工具
         # from agentscope_runtime.sandbox.tools.filesystem import read_file
@@ -253,7 +254,7 @@ class ExamQuestionVerificationAgent:
         runer = Runner(
             agent=self.agent,
             context_manager=self.context_manager,
-            environment_manager=self.environment_manager,
+            # environment_manager=self.environment_manager,
         )
         self.runner = runer
         self.connected = True
@@ -334,7 +335,7 @@ class ExamQuestionVerificationAgent:
     async def close(self) -> None:
         """关闭所有服务与沙箱连接。"""
         await self.memory_service.stop()
-        await self.sandbox_service.stop()
+        # await self.sandbox_service.stop()
 
     def create_exam_question_verification_agent(self) -> AgentScopeAgent:
         """创建考试问题核查智能体。"""
