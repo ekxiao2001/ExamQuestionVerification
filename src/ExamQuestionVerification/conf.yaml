@@ -1,0 +1,22 @@
+# model configuration
+LLM_BINDING: deepseek
+MODEL_NAME: deepseek-chat
+API_KEY: sk-cce31286d39d427e969ebea2e18e00d2
+BASE_URL: https://api.deepseek.com
+
+# 最大修复尝试次数
+MAX_FIX_ATTEMPTS: 3
+
+# fastapi 服务配置
+API_SERVER_HOST: 0.0.0.0
+API_SERVER_PORT: 8761
+
+# Agent runtime configuration
+AGENT_RUNTIME_HOST: 0.0.0.0
+AGENT_RUNTIME_PORT: 8762
+AGENT_RUNTIME_ENDPOINT_PATH: /process
+
+# Agent runtime sandbox configuration
+AGENT_RUNTIME_SANDBOX_TYPE: remote # local, remote
+AGENT_RUNTIME_SANDBOX_HOST: runtime_sandbox_base # only need for remote sandbox
+AGENT_RUNTIME_SANDBOX_PORT: 8760 # only need for remote sandbox

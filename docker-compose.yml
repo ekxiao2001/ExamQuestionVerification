@@ -13,6 +13,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
+      - "8761:8761" # 宿主机端口:容器端口
       - "8762:8762"
     networks:
       - default
