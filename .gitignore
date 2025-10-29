@@ -18,5 +18,5 @@ access.log
 app.log
 
 # docker file
-uv-x86_64-unknown-linux-musl.tar
+uv-x86_64-unknown-linux-musl.tar.gz
 rustup-init
