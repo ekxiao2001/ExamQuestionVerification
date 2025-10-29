@@ -16,3 +16,7 @@ runtime_sandbox_storage/
 sessions_mount_dir/
 access.log
 app.log
+
+# docker file
+uv-x86_64-unknown-linux-musl.tar
+rustup-init
