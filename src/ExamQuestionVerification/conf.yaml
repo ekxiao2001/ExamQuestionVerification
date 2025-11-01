@@ -1,11 +1,20 @@
 # model configuration
-LLM_BINDING: deepseek
-MODEL_NAME: deepseek-chat
-API_KEY: sk-cce31286d39d427e969ebea2e18e00d2
-BASE_URL: https://api.deepseek.com
+# LLM_BINDING: deepseek
+# MODEL_NAME: deepseek-chat
+# API_KEY: sk-cce31286d39d427e969ebea2e18e00d2
+# BASE_URL: https://api.deepseek.com
+
+LLM_BINDING: dashscope
+MODEL_NAME: qwen-max
+# API_KEY: sk-ded90c5b07724a569b682a267fb92b6a # 自己的
+API_KEY: sk-8a3a1f24863e4b91a1d8198a0fbfa0b5 # 公司的
+# BASE_URL: https://api.deepseek.com
 
 # 最大修复尝试次数
 MAX_FIX_ATTEMPTS: 3
+
+# 工具执行器最大工作线程数
+TOOL_EXECUTOR_MAX_WORKERS: 10
 
 # Agent runtime configuration
 AGENT_RUNTIME_HOST: 0.0.0.0

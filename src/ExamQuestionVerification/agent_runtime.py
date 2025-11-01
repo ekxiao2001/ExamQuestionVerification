@@ -4,7 +4,7 @@ import logging
 
 from agentscope_runtime.engine.services.session_history_service import uuid
 
-from eqv_agent import ExamQuestionVerificationAgent
+from eqv_agent_runtime import EQV_AgentRuntime
 
 
 # ---------------------------
@@ -21,12 +21,12 @@ if os.path.exists(ENV_PATH):
     from dotenv import load_dotenv
     load_dotenv(ENV_PATH)
 
-async def run_agent(agent: ExamQuestionVerificationAgent):
+async def run_agent(agent_runtime: EQV_AgentRuntime):
     try:
         session_id = uuid.uuid4()
         user_id = uuid.uuid4()
-        await agent.connect(str(session_id), str(user_id))
-        await agent.deploy()
+        await agent_runtime.connect(str(session_id), str(user_id))
+        await agent_runtime.deploy()
     except Exception as e:
         logger.error(f"Agent deployment failed: {e}")
         raise e
@@ -34,10 +34,10 @@ async def run_agent(agent: ExamQuestionVerificationAgent):
         logger.info(f"Agent deployment interrupted by user.")
     finally:
         logger.info("Cleaning up and closing agent...")
-        await agent.close()
+        await agent_runtime.close()
         logger.info("Agent deployment finished.")
 
 if __name__ == "__main__":
-    agent  = ExamQuestionVerificationAgent()
+    agent  = EQV_AgentRuntime()
     asyncio.run(run_agent(agent))
 

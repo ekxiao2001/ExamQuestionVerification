@@ -122,7 +122,7 @@ async def fix_endpoint(payload: FixRequest):
 async def verify_and_fix_endpoint(payload: VerifyAndFixRequest):
     try:
         eq = ExamQuestion(**payload.exam_question.model_dump())
-        final_eq: ExamQuestion = await verifier.main(
+        final_eq: ExamQuestion = await verifier.verify_and_fix_exam_question(
             eq, max_fix_attempts=payload.max_fix_attempts
         )
         return StandardResponse(code=0, message="ok", data=final_eq.model_dump())

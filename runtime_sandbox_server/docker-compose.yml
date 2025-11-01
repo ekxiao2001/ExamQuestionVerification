@@ -1,0 +1,13 @@
+services:
+  runtime-sandbox-server:
+    # image: runtime_sandbox_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: runtime-sandbox-server
+    ports:
+      - "8010:8010"
+    volumes:
+      # 挂载Docker socket文件，用于容器内的Docker操作
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped

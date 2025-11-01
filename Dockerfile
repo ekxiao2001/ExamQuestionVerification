@@ -80,6 +80,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Copy application code
 COPY src/ ./src/
+COPY runtime_sandbox_server/ ./runtime_sandbox_server/
 COPY .env ./
 
 # Supervisor 配置
@@ -89,5 +90,5 @@ RUN mkdir -p /var/log/supervisor
 # Expose port
 EXPOSE 8761 8762
 
-# 使用 CMD 启动 Supervisor
+# 启动 Supervisor
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

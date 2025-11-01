@@ -9,13 +9,12 @@ PROMPTS["agent_sys_prompt"] = '''
 
 - verify_exam_question_tool：单独核查考题是否合规。该工具会检查考题，并返回合规状态；如果题目不合规，它会提供详细的修正意见。
 - fix_exam_question_tool：单独修正考题。该工具需要输入考题和修正意见（例如，从用户请求或先前核查结果中获取），然后对考题进行修正。
-- verify_and_fix_exam_question_tool：一键核查和修正考题。该工具自动执行核查和修正流程：先核查考题，如果不合规则进行修正；如果题目合规，则直接返回考题信息。
 
 **你的行为准则**：
 1. 分析用户请求并选择工具：
 - 如果用户请求明确要求 只核查考题（例如，使用“核查”、“检查考题是否合规”等关键词），则调用 verify_exam_question_tool。
 - 如果用户请求明确要求 只修正考题（例如，使用“修正”、“修改考题”等关键词），则调用 fix_exam_question_tool。注意：使用此工具时，你必须确保用户提供了考题和修正意见。如果修正意见缺失，请先调用 verify_exam_question_tool 获取意见，或直接询问用户提供修正细节。
-- 如果用户请求要求 同时核查和修正（例如，使用“一键处理”、“核查并修正”、“全面处理考题”等关键词），或请求较为模糊（如“处理这个考题”），则优先调用 verify_and_fix_exam_question_tool。
+- 如果用户请求要求 同时核查和修正（例如，使用“一键处理”、“核查并修正”、“全面处理考题”等关键词），或请求较为模糊（如“处理这个考题”），则按照两工具协作流程执行：先调用 verify_exam_question_tool 进行核查；若考题不合规，则基于核查结果中的修正建议调用 fix_exam_question_tool 进行修正；若考题合规，则直接返回考题信息。
 - 如果用户意图不明确，请主动询问用户以澄清（例如，“请问您是只想核查考题，还是需要同时核查和修正？”）。
 
 2. 执行工具调用：
@@ -28,7 +27,6 @@ PROMPTS["agent_sys_prompt"] = '''
 
 4. 效率与限制：
 - 优先根据用户明确意图选择工具，避免不必要的调用。例如，如果用户已提供修正意见，则直接使用 fix_exam_question_tool，而无需额外核查。
-- 工具 verify_and_fix_exam_question_tool 已内置重试逻辑，因此无需在规划中额外处理重试。
 - 保持响应简洁专业，专注于任务规划与执行。
 '''
 
@@ -53,14 +51,14 @@ PROMPTS["verification_prompt"] = """
 - 额外要求：{extra_requirement}
 
 **输出的核查结果应当包括以下内容**：
-- Compliance：布尔值，指示考题提供的答案是否正确并且符合大纲要求。
+- is_compliant：布尔值，指示考题提供的答案是否正确并且符合大纲要求。
 - suggestion：字符串，具体修改建议（对于不符合大纲要求的问题，只能修改考题；对于答案不正确的问题，则修改提供的答案为正确答案）或空字符串。
 
-**严格按照以下json格式输出**:
-{{
-"Compliance": "true/false",
+**严格按照以下json格式输出（仅输出JSON，不要任何额外文本或Markdown）**:
+{
+"is_compliant": true/false,
 "suggestion": "具体的修改意见"
-}}
+}
 """
 
 PROMPTS["single_choice_verification"] = """
@@ -88,11 +86,11 @@ PROMPTS["single_choice_verification"] = """
 - 知识点描述: {knowledge_point_description}
 - 额外要求：{extra_requirement}
 
-**输出格式**:
-{{
-"Compliance": true/false,
+**输出格式（仅输出JSON，不要任何额外文本或Markdown）**:
+{
+"is_compliant": true/false,
 "suggestion": "具体修改建议（对于不符合大纲要求的问题，只能修改考题；对于答案不正确的问题，则修改提供的答案为正确答案）或空字符串"
-}}
+}
 """
 
 PROMPTS["multi_choice_verification"] = """
@@ -119,11 +117,11 @@ PROMPTS["multi_choice_verification"] = """
 - 知识点描述: {knowledge_point_description}
 - 额外要求：{extra_requirement}
 
-**输出格式**：
-{{
-"Compliance": true/false,
+**输出格式（仅输出JSON，不要任何额外文本或Markdown）**：
+{
+"is_compliant": true/false,
 "suggestion": "具体修改建议（对于不符合大纲要求的问题，只能修改考题；对于答案不正确的问题，则修改提供的答案为正确答案）或空字符串"
-}}
+}
 """
 
 PROMPTS["fill_blank_verification"] = """
@@ -151,11 +149,11 @@ PROMPTS["fill_blank_verification"] = """
 - 知识点描述: {knowledge_point_description}
 - 额外要求：{extra_requirement}
 
-**输出格式**：
-{{
-"Compliance": true/false,
+**输出格式（仅输出JSON，不要任何额外文本或Markdown）**：
+{
+"is_compliant": true/false,
 "suggestion": "具体修改建议（对于不符合大纲要求的问题，只能修改考题；对于答案不正确的问题，则修改提供的答案为正确答案）或空字符串"
-}}
+}
 """
 
 PROMPTS["brief_answer_verification"] = """
@@ -182,9 +180,9 @@ PROMPTS["brief_answer_verification"] = """
 - 知识点描述: {knowledge_point_description}
 - 额外要求：{extra_requirement}
 
-**输出格式**：
+**输出格式（仅输出JSON，不要任何额外文本或Markdown）**：
 {{
-"Compliance": true/false,
+"is_compliant": true/false,
 "suggestion": "具体修改建议（对于不符合大纲要求的问题，只能修改考题；对于答案不正确的问题，则修改原有答案为正确答案）或空字符串"
 }}
 """
@@ -213,11 +211,11 @@ PROMPTS["calculation_verification"] = """
 - 知识点描述: {knowledge_point_description}
 - 额外要求：{extra_requirement}
 
-**输出格式**：
-{{
-"Compliance": true/false,
+**输出格式（仅输出JSON，不要任何额外文本或Markdown）**：
+{
+"is_compliant": true/false,
 "suggestion": "具体修改建议（对于不符合大纲要求的问题，只能修改考题；对于答案不正确的问题，则修改原有答案为正确答案）或空字符串"
-}}
+}
 """
 
 # 考题修正，根据核查结果修正考题
@@ -243,4 +241,6 @@ PROMPTS["fix_prompt"] = """
 "knowledge_point_description": "修改后的知识点描述",
 "extra_requirement": "{extra_requirement}"
 }}
+
+仅输出一个JSON对象，不要输出除JSON外的任何内容（不包含解释、Markdown、注释、代码块标记）。键必须严格为：question, answer, question_type, knowledge_point, knowledge_point_description, extra_requirement。
 """
